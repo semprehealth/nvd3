@@ -134,11 +134,15 @@ nv.models.multiChart = function() {
                 legend.color(color_array);
 
                 g.select('.legendWrap')
-                    .datum(data.map(function(series) {
+                    .datum(data.reduce(function(acc, series) {
+                        if (series.showInLegend === false) {
+                          return acc;
+                        }
                         series.originalKey = series.originalKey === undefined ? series.key : series.originalKey;
                         series.key = series.originalKey + (series.yAxis == 1 ? '' : legendRightAxisHint);
-                        return series;
-                    }))
+                        acc.push(series)
+                        return acc
+                    }, []))
                     .call(legend);
 
                 if (!marginTop && legend.height() !== margin.top) {
